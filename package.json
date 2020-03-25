@@ -1,0 +1,25 @@
+{
+  "name": "chatrecicla2",
+  "version": "1.0.0",
+  "description": "react version of islaperfecta",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/islaperfecta-react/islaperfecta-react.github.io.git"
+  },
+  "author": "justo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/islaperfecta-react/islaperfecta-react.github.io/issues"
+  },
+  "homepage": "https://github.com/islaperfecta-react/islaperfecta-react.github.io#readme",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "express": "^4.17.1",
+    "mongoose": "^5.9.6",
+    "socket.io": "^2.3.0"
+  }
+}
