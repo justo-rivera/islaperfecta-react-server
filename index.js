@@ -55,8 +55,8 @@ io.on('connection', (socket) => {
     // Encontrar mensages de la historia y emit ellos al app
     socket.username = username
     Message.find()
-    .sort({createdAt: 'DESC'})
-    .limit()
+    .sort({_id: 'DESC'})
+    .limit(30)
     .then(messages => {
         socket.emit('RECEIVE_MESSAGE', messages, 'history');
     }).catch(err => {
@@ -98,16 +98,15 @@ io.on('connection', (socket) => {
         socket.emit('GOT_ATS', foundAts)
       })
     })
-    socket.on('GET_HISTORY', function(data){
-    Message.find()
-    .sort({createdAt: 'DESC'})
-    .skip(data.msgLoaded)
-    .limit(30)
-    .then(messages => {
-      socket.emit('RECEIVE_MESSAGE', messages, 'history')
-    }).catch(err => {
-      console.log(err);
-    })
+    socket.on('GET_MORE_HISTORY', function(data){
+      Message.find({ _id: { $lt: data.firstMsgID } })
+      .sort({_id: 'DESC'})
+      .limit(30)
+      .then(messages => {
+        socket.emit('RECEIVE_MESSAGE', messages, 'more_history', data.username)
+      }).catch(err => {
+        console.log(err);
+      })
     })
     socket.on('GET_FAVS', async function(user){
       const favedByUser = await Message.find({ faved_by: user}).sort({updatedAt: 'DESC'}).select('message')
