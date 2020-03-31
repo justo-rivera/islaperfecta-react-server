@@ -38,8 +38,8 @@ var Message = mongoose.model('Message', messageSchema)
 var Ats = mongoose.model('At', atSchema)
 var Users = mongoose.model('Users', usersSchema)
 
-mongoose.connect("mongodb+srv://justo:fn231093@cluster0-syxf1.mongodb.net/test?retryWrites=true&w=majority", { autoIndex: false, useNewUrlParser: true, dbName: 'chatrecicla'});
-
+mongoose.connect("mongodb+srv://justo:fn231093@cluster0-syxf1.mongodb.net/test?retryWrites=true&w=majority", { autoIndex: false, useNewUrlParser: true, useUnifiedTopology: true, dbName: 'chatrecicla'});
+Users.deleteMany({}).catch(err => console.log(err)) //resetear la lista de usuarios con el servidor
 var express = require('express');
 var socket = require('socket.io');
 
@@ -49,10 +49,11 @@ server = app.listen(PORT, function(){
     console.log('server is running on port ' + PORT);
 });
 
-io = socket(server);
-
+io = socket(server)
+var username = "👻"
 io.on('connection', (socket) => {
     // Encontrar mensages de la historia y emit ellos al app
+    socket.username = username
     Message.find()
     .sort({createdAt: 'DESC'})
     .limit()
@@ -60,15 +61,23 @@ io.on('connection', (socket) => {
         socket.emit('RECEIVE_MESSAGE', messages, 'history');
     }).catch(err => {
         console.log(err);
-    });
-    socket.on('NEW_USERNAME', function(data){
-      const add2Userlist = new Users(data.username)
-      add2Userlist.save()
-      .then( function(){
-
-
-      })
     })
+    socket.on('NEW_USER', function(data){
+      data.username !== null? socket.username = data.username : null
+      sendUserList()
+    })
+    const sendUserList = () => {
+      var newUserlist = []
+      const allClients = Object.keys(io.sockets.sockets)
+      allClients.map( (clientId) =>{
+        newUserlist.push(io.sockets.sockets[clientId].username)
+      })
+      socket.emit('NEW_USERLIST', newUserlist)
+      socket.broadcast.emit('NEW_USERLIST', newUserlist)
+    }
+      socket.on('disconnect', (reason) => {
+      socket.broadcast.emit('GONE_USER', socket.username)
+      })
     // Escuchar para nuevos mensajes
     socket.on('SEND_MESSAGE', function(data){
         const msg = new Message(data);
