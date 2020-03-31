@@ -66,6 +66,10 @@ io.on('connection', (socket) => {
       data.username !== null? socket.username = data.username : null
       sendUserList()
     })
+    socket.on('NEW_USERNAME', function(data){
+      socket.username !== null? socket.username = data.username : null
+      sendUserList()
+    })
     const sendUserList = () => {
       var newUserlist = []
       const allClients = Object.keys(io.sockets.sockets)
