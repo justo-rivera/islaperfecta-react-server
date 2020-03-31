@@ -26,9 +26,17 @@ var atSchema = new Schema({
     collection: 'chatrecicla-react-ats',
     timestamps: true
   })
-
-var Message = mongoose.model('Message', messageSchema);
-var Ats = mongoose.model('At', atSchema);
+var usersSchema = new Schema({
+  username: String
+},
+  {
+    collection: 'chatrecicla-react-online',
+    timestamps: true
+  }
+)
+var Message = mongoose.model('Message', messageSchema)
+var Ats = mongoose.model('At', atSchema)
+var Users = mongoose.model('Users', usersSchema)
 
 mongoose.connect("mongodb+srv://justo:fn231093@cluster0-syxf1.mongodb.net/test?retryWrites=true&w=majority", { autoIndex: false, useNewUrlParser: true, dbName: 'chatrecicla'});
 
@@ -46,13 +54,21 @@ io = socket(server);
 io.on('connection', (socket) => {
     // Encontrar mensages de la historia y emit ellos al app
     Message.find()
-    .sort({timestamp: 'DESC'})
+    .sort({createdAt: 'DESC'})
     .limit()
     .then(messages => {
         socket.emit('RECEIVE_MESSAGE', messages, 'history');
     }).catch(err => {
         console.log(err);
     });
+    socket.on('NEW_USERNAME', function(data){
+      const add2Userlist = new Users(data.username)
+      add2Userlist.save()
+      .then( function(){
+
+
+      })
+    }
     // Escuchar para nuevos mensajes
     socket.on('SEND_MESSAGE', function(data){
         const msg = new Message(data);
@@ -68,14 +84,14 @@ io.on('connection', (socket) => {
       console.log(newAt)
     })
     socket.on('GET_ATS', function(data){
-      const myAts = Ats.find({to: data.username}).sort({timestamp: 'DESC'})
+      const myAts = Ats.find({to: data.username}).sort({createdAt: 'DESC'})
       .then(foundAts => {
         socket.emit('GOT_ATS', foundAts)
       })
     })
     socket.on('GET_HISTORY', function(data){
     Message.find()
-    .sort({timestamp: 'DESC'})
+    .sort({createdAt: 'DESC'})
     .skip(data.msgLoaded)
     .limit(30)
     .then(messages => {
@@ -85,7 +101,7 @@ io.on('connection', (socket) => {
     })
     })
     socket.on('GET_FAVS', async function(user){
-      const favedByUser = await Message.find({ faved_by: user}).sort({timestamp: 'DESC'}).select('message')
+      const favedByUser = await Message.find({ faved_by: user}).sort({updatedAt: 'DESC'}).select('message')
       socket.emit('GOT_FAVS', favedByUser)
     })
     socket.on('FAV_MESSAGE', async function(data){
