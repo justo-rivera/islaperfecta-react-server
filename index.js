@@ -68,7 +68,7 @@ io.on('connection', (socket) => {
       console.log(newAt)
     })
     socket.on('GET_ATS', function(data){
-      const myAts = Ats.find({to: data.username})
+      const myAts = Ats.find({to: data.username}).sort({timestamp: 'DESC'})
       .then(foundAts => {
         socket.emit('GOT_ATS', foundAts)
       })
