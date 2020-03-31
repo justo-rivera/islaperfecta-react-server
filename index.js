@@ -68,7 +68,7 @@ io.on('connection', (socket) => {
 
 
       })
-    }
+    })
     // Escuchar para nuevos mensajes
     socket.on('SEND_MESSAGE', function(data){
         const msg = new Message(data);
