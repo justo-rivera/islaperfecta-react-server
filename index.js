@@ -85,7 +85,7 @@ io.on('connection', (socket) => {
     })
     })
     socket.on('GET_FAVS', async function(user){
-      const favedByUser = await Message.find({ faved_by: user}).select('message')
+      const favedByUser = await Message.find({ faved_by: user}).sort({timestamp: 'DESC'}).select('message')
       socket.emit('GOT_FAVS', favedByUser)
     })
     socket.on('FAV_MESSAGE', async function(data){
