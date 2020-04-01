@@ -8,7 +8,6 @@ var messageSchema = new Schema({
   uid: String,
   color: String,
   message: String,
-  timestamp: Date,
   faved_by: [String]
   },
   {
