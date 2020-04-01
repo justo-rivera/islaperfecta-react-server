@@ -51,17 +51,18 @@ server = app.listen(PORT, function(){
 io = socket(server)
 var username = "👻"
 io.on('connection', (socket) => {
-    // Encontrar mensages de la historia y emit ellos al app
     socket.username = username
-    Message.find()
-    .sort({_id: 'DESC'})
-    .limit(30)
-    .then(messages => {
-        socket.emit('RECEIVE_MESSAGE', messages, 'history');
-    }).catch(err => {
-        console.log(err);
-    })
     socket.on('NEW_USER', function(data){
+      //cambiado a new_user para que funcione con el home button de los moviles, que haga reload
+      // Encontrar mensages de la historia y emit ellos al app
+      Message.find()
+      .sort({_id: 'DESC'})
+      .limit(30)
+      .then(messages => {
+          socket.emit('RECEIVE_MESSAGE', messages, 'history');
+      }).catch(err => {
+          console.log(err);
+      })
       data.username !== null? socket.username = data.username : null
       sendUserList()
     })
