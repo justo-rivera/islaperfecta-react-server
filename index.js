@@ -69,6 +69,15 @@ io.on('connection', (socket) => {
       socket.username !== null? socket.username = data.username : null
       sendUserList()
     })
+    socket.on('GET_NEW_MESSAGES', function(data){ //added this method to handle idles
+      Message.find({ _id: { $gt: data.lastMsgID } })
+      .sort({_id: 'DESC'})
+      .then(messages => {
+        socket.emit('RECEIVE_MESSAGE', messages, 'get_new_messages')
+      }).catch(err => {
+        console.log(err);
+      })
+    })
     const sendUserList = () => {
       var newUserlist = []
       const allClients = Object.keys(io.sockets.sockets)
