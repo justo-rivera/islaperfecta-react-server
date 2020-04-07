@@ -55,13 +55,13 @@ function isBanned(ip, name){
   let returnTrueIfBanned = false;
   banList.map( banned => {
     if(banned.ip === ip || banned.username === name) returnTrueIfBanned = true
+    console.log('banned')
+    console.log(banned)
   })
   return returnTrueIfBanned
 }
 function refreshBans(){
   banList = Bans.find()
-  console.log('banList')
-  console.log(banList)
 }
 io.on('connection', (socket) => {
     // Encontrar mensages de la historia y emit ellos al app
