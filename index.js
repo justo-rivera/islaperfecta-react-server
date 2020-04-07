@@ -116,10 +116,9 @@ io.on('connection', (socket) => {
           .limit(1)
           .then( result => {
           const newBan = new Bans({username: result.username, ip: result.uid})
+          console.log(result)
           newBan.save()
           .then( () => { refreshBans()});
-          console.log('newBan:')
-          console.log(newBan)
           })
           return
         }
