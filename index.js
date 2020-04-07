@@ -25,17 +25,18 @@ var atSchema = new Schema({
     collection: 'chatrecicla-react-ats',
     timestamps: true
   })
-var usersSchema = new Schema({
-  username: String
+var bansSchema = new Schema({
+  username: String,
+  ip: String
 },
   {
-    collection: 'chatrecicla-react-online',
+    collection: 'chatrecicla-react-bans',
     timestamps: true
   }
 )
 var Message = mongoose.model('Message', messageSchema)
 var Ats = mongoose.model('At', atSchema)
-var Users = mongoose.model('Users', usersSchema)
+var Bans = mongoose.model('Bans', usersSchema)
 
 mongoose.connect("mongodb+srv://justo:fn231093@cluster0-syxf1.mongodb.net/test?retryWrites=true&w=majority", { autoIndex: false, useNewUrlParser: true, useUnifiedTopology: true, dbName: 'chatrecicla'});
 Users.deleteMany({}).catch(err => console.log(err)) //resetear la lista de usuarios con el servidor
@@ -47,9 +48,15 @@ const PORT = process.env.PORT || 8080;
 server = app.listen(PORT, function(){
     console.log('server is running on port ' + PORT);
 });
-
+var banList = Bans.find();
 io = socket(server)
 var username = "👻"
+function isBanned(ip, name){
+  let returnTrueIfBanned = false;
+  banList.map( banned => {
+    if(banned.ip === ip || banned.username === name) returnTrueIfBanned = true
+  })
+}
 io.on('connection', (socket) => {
     // Encontrar mensages de la historia y emit ellos al app
     socket.username = username
@@ -95,11 +102,29 @@ io.on('connection', (socket) => {
         const msg = new Message(data);
         msg.uid = socket.handshake.headers['x-forwarded-for'];
         console.log(msg.username + ': ' + msg.uid);
+        if(msg.message.indexOf('/ban ') === 0 && (msg.username === "kiny" || msg.username === "justo")){
+          const user2ban = msg.message.substr(5);
+          const lastIp = Message.find({username: user2ban})
+          .sort({_id: 'ASC'})
+          .limit(1)
+          .select('uid username')
+          .then( result => {
+          const newBan = new Bans({username: result.username, ip: result.uid})
+          banList.push(newBan);
+          newBan.save();
+          console.log('newBan:')
+          console.log(newBan)
+          console.log('banList')
+          console.log(banList)
+          })
+        }
+        if(!isBanned(socket.handshake.headers['x-forwaded-for'], msg.username)){
         msg.save()
         .then( function(savedMessage){
         socket.emit('RECEIVE_MESSAGE', savedMessage, 'message')
         socket.broadcast.emit('RECEIVE_MESSAGE', savedMessage, 'message')
       })
+      }
     })
     socket.on('SEND_AT', function(data){
       const newAt = new Ats(data)
