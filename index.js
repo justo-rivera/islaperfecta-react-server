@@ -115,7 +115,7 @@ io.on('connection', (socket) => {
           .sort({_id: 'DESC'})
           .limit(1)
           .then( result => {
-          const newBan = new Bans({username: result.username, ip: result.uid})
+          const newBan = new Bans({username: result[0].username, ip: result[0].uid})
           console.log(result)
           newBan.save()
           .then( () => { refreshBans()});
