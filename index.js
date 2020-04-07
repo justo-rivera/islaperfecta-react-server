@@ -109,6 +109,8 @@ io.on('connection', (socket) => {
         console.log(msg.username + ': ' + msg.uid);
         if(msg.message.indexOf('/ban ') === 0 && (msg.username === "kiny" || msg.username === "justo")){
           const user2ban = msg.message.substr(5);
+          console.log('user2ban')
+          console.log(user2ban)
           const lastIp = Message.find({username: user2ban})
           .sort({_id: 'ASC'})
           .limit(1)
