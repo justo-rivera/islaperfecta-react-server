@@ -112,7 +112,7 @@ io.on('connection', (socket) => {
           console.log('user2ban')
           console.log(user2ban)
           const lastIp = Message.find({username: user2ban})
-          .sort({_id: 'ASC'})
+          .sort({_id: 'DESC'})
           .limit(1)
           .then( result => {
           const newBan = new Bans({username: result.username, ip: result.uid})
