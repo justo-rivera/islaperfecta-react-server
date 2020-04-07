@@ -129,10 +129,7 @@ io.on('connection', (socket) => {
           .then( () => {refreshBans() });
           })
         }
-        if(msg.message.indexOf('/refreshbans ' === 0) && msg.username === "justo"){
-          refreshBans();
-        }
-        if(!isBanned(socket.handshake.headers['x-forwaded-for'], msg.username)){
+        else if(!isBanned(socket.handshake.headers['x-forwaded-for'], msg.username)){
         msg.save()
         .then( function(savedMessage){
         socket.emit('RECEIVE_MESSAGE', savedMessage, 'message')
