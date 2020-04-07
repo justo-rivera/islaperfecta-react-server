@@ -57,6 +57,11 @@ function isBanned(ip, name){
     if(banned.ip === ip || banned.username === name) returnTrueIfBanned = true
   })
 }
+function refreshBans(){
+  banList = Bans.find()
+  console.log('banList')
+  console.log(banList)
+}
 io.on('connection', (socket) => {
     // Encontrar mensages de la historia y emit ellos al app
     socket.username = username
@@ -110,12 +115,10 @@ io.on('connection', (socket) => {
           .select('uid username')
           .then( result => {
           const newBan = new Bans({username: result.username, ip: result.uid})
-          banList.push(newBan);
-          newBan.save();
+          newBan.save()
+          .then( () => { refreshBans()});
           console.log('newBan:')
           console.log(newBan)
-          console.log('banList')
-          console.log(banList)
           })
           return
         }
