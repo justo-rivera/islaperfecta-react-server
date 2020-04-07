@@ -93,6 +93,7 @@ io.on('connection', (socket) => {
     // Escuchar para nuevos mensajes
     socket.on('SEND_MESSAGE', function(data){
         const msg = new Message(data);
+        msg.uid = socket.handshake.address;
         msg.save()
         .then( function(savedMessage){
         socket.emit('RECEIVE_MESSAGE', savedMessage, 'message')
