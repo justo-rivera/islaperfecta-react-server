@@ -68,6 +68,7 @@ function isBanned(ip, name){
 function refreshBans(){
   banList = []
 Bans.find().then( result => { banList.push(result)})
+console.log(banList)
 }
 io.on('connection', (socket) => {
     // Encontrar mensages de la historia y emit ellos al app
