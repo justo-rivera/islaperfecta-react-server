@@ -48,7 +48,8 @@ const PORT = process.env.PORT || 8080;
 server = app.listen(PORT, function(){
     console.log('server is running on port ' + PORT);
 });
-var banList = Bans.find();
+var banList = [];
+Bans.find().then( result => { banList.push(result)})
 io = socket(server)
 var username = "👻"
 function isBanned(ip, name){
@@ -61,7 +62,7 @@ function isBanned(ip, name){
   return returnTrueIfBanned
 }
 function refreshBans(){
-  banList = Bans.find()
+Bans.find().then( result => { banList.push(result)})
 }
 io.on('connection', (socket) => {
     // Encontrar mensages de la historia y emit ellos al app
@@ -119,7 +120,7 @@ io.on('connection', (socket) => {
           const newBan = new Bans({username: result[0].username, ip: result[0].uid})
           console.log(result)
           newBan.save()
-          .then( () => { refreshBans()});
+          .then( refreshBans });
           })
           return
         }
