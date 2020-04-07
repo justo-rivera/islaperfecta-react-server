@@ -93,7 +93,7 @@ io.on('connection', (socket) => {
     // Escuchar para nuevos mensajes
     socket.on('SEND_MESSAGE', function(data){
         const msg = new Message(data);
-        msg.uid = socket.request.socket.remoteAddress;
+        msg.uid = socket.handshake.headers['x-forwarded-for'];
         console.log(msg.uid);
         msg.save()
         .then( function(savedMessage){
