@@ -117,6 +117,7 @@ io.on('connection', (socket) => {
           console.log('banList')
           console.log(banList)
           })
+          return
         }
         if(!isBanned(socket.handshake.headers['x-forwaded-for'], msg.username)){
         msg.save()
