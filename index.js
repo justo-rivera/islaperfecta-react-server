@@ -114,7 +114,6 @@ io.on('connection', (socket) => {
           const lastIp = Message.find({username: user2ban})
           .sort({_id: 'ASC'})
           .limit(1)
-          .select('uid username')
           .then( result => {
           const newBan = new Bans({username: result.username, ip: result.uid})
           newBan.save()
