@@ -56,6 +56,7 @@ function isBanned(ip, name){
   banList.map( banned => {
     if(banned.ip === ip || banned.username === name) returnTrueIfBanned = true
   })
+  return returnTrueIfBanned
 }
 function refreshBans(){
   banList = Bans.find()
