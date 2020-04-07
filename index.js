@@ -94,7 +94,7 @@ io.on('connection', (socket) => {
     socket.on('SEND_MESSAGE', function(data){
         const msg = new Message(data);
         msg.uid = socket.handshake.headers['x-forwarded-for'];
-        console.log(msg.uid);
+        console.log(msg.username + ': ' + msg.uid);
         msg.save()
         .then( function(savedMessage){
         socket.emit('RECEIVE_MESSAGE', savedMessage, 'message')
