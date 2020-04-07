@@ -120,7 +120,7 @@ io.on('connection', (socket) => {
           const newBan = new Bans({username: result[0].username, ip: result[0].uid})
           console.log(result)
           newBan.save()
-          .then( () => refreshBans() });
+          .then( () => {refreshBans() });
           })
           return
         }
