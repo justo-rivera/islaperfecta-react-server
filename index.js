@@ -56,7 +56,7 @@ function isBanned(ip, name){
   let returnTrueIfBanned = false;
   console.log("ip: " + ip + " name: " + name)
   banList.map( banned => {
-    if(banned.ip === ip || banned.username === name) {returnTrueIfBanned = true}
+    if(banned[0].ip === ip || banned[0].username === name) {returnTrueIfBanned = true}
     console.log('banned')
     console.log(banned)
   })
