@@ -54,7 +54,7 @@ io = socket(server)
 var username = "👻"
 function isBanned(ip, name){
   let returnTrueIfBanned = false;
-  console.log("ip: " + ip + " name: " + name) 
+  console.log("ip: " + ip + " name: " + name)
   banList.map( banned => {
     if(banned.ip === ip || banned.username === name) {returnTrueIfBanned = true}
     console.log('banned')
@@ -130,7 +130,7 @@ io.on('connection', (socket) => {
           .then( () => {refreshBans() });
           })
         }
-        else if(!isBanned(socket.handshake.headers['x-forwaded-for'], msg.username)){
+        else if(!isBanned(socket.handshake.headers['x-forwarded-for'], msg.username)){
         msg.save()
         .then( function(savedMessage){
         socket.emit('RECEIVE_MESSAGE', savedMessage, 'message')
