@@ -62,6 +62,7 @@ function isBanned(ip, name){
   return returnTrueIfBanned
 }
 function refreshBans(){
+  banList = []
 Bans.find().then( result => { banList.push(result)})
 }
 io.on('connection', (socket) => {
