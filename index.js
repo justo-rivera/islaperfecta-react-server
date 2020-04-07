@@ -36,7 +36,7 @@ var bansSchema = new Schema({
 )
 var Message = mongoose.model('Message', messageSchema)
 var Ats = mongoose.model('At', atSchema)
-var Bans = mongoose.model('Bans', usersSchema)
+var Bans = mongoose.model('Bans', bansSchema)
 
 mongoose.connect("mongodb+srv://justo:fn231093@cluster0-syxf1.mongodb.net/test?retryWrites=true&w=majority", { autoIndex: false, useNewUrlParser: true, useUnifiedTopology: true, dbName: 'chatrecicla'});
 Users.deleteMany({}).catch(err => console.log(err)) //resetear la lista de usuarios con el servidor
