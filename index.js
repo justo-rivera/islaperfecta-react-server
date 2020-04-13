@@ -60,10 +60,6 @@ function isBanned(ip, name){
     console.log('banned')
     console.log(banned)
   })
-  console.log('returntrueifbanned:')
-  console.log(returnTrueIfBanned)
-  console.log('banList:')
-  console.log(banList)
   return returnTrueIfBanned
 }
 function refreshBans(){
@@ -183,5 +179,38 @@ io.on('connection', (socket) => {
           socket.emit('UNFAVED_MESSAGE', favedMsg)
         }
       })
+    })
+    socket.on('streamInit', function(data){
+      socket.broadcast.emit('newStreamingPeer', data, socket.id)
+    })
+    socket.on('AnnounceStream', (data) => {
+      console.log(data)
+      console.log(socket.id)
+      if(data !== undefined) socket.broadcast.to(data.to).emit('connectToMe', {from: socket.id, private: true})
+      else socket.broadcast.emit('connectToMe', {from: socket.id, private: false})
+    })
+    socket.on('peerSignal_initd', function(data){
+      console.log('peerSignal_initd from: to:')
+      console.log(socket.id)
+      console.log(data.to)
+      socket.broadcast.to(data.to).emit('peerSignal_initd', {dataRTC: data.dataRTC, from: socket.id})
+    })
+    socket.on('handshakeToPeer', function(data){
+      socket.broadcast.to(data.to).emit('handshakeToPeer', {dataRTC: data.dataRTC, from: socket.id})
+    })
+    socket.on('handshakeToStream', function(data){
+      socket.broadcast.to(data.to).emit('handshakeToStream', {dataRTC: data.dataRTC, from: socket.id})
+    })
+    socket.on('handshakeToPeer_initd', function(data){
+      socket.broadcast.to(data.to).emit('handshakeToPeer_initd', {dataRTC: data.dataRTC, from: socket.id})
+    })
+    socket.on('connectToStream', function(data){
+      socket.broadcast.to(data.to).emit('connectToStream', socket.id)
+    })
+    socket.on('streamToMe', function(data){
+      socket.broadcast.to(data.to).emit('streamToMe', {from: socket.id})
+    })
+    socket.on('newReceiver', function(data){
+      socket.broadcast.emit('newReceiver', socket.id)
     })
   })
